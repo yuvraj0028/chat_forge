@@ -58,13 +58,13 @@ class ProjectFile(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='files')
     file = models.FileField(upload_to=project_file_path)
     original_name = models.CharField(max_length=255)
-    gemini_uri = models.CharField(
+    ai_uri = models.CharField(
         max_length=500, blank=True, default='',
-        help_text='Gemini File API URI',
+        help_text='AI file API URI',
     )
-    gemini_file_name = models.CharField(
+    ai_file_name = models.CharField(
         max_length=500, blank=True, default='',
-        help_text='Gemini File API resource name for deletion',
+        help_text='AI file API resource name for deletion',
     )
     size_bytes = models.BigIntegerField(default=0)
     mime_type = models.CharField(max_length=100, blank=True, default='')

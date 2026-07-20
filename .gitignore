@@ -16,3 +16,6 @@ venv/
 .vscode/
 .zed/
 .idea/
+
+# pycache
+__pycache__/

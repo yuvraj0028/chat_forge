@@ -1,0 +1,18 @@
+# sqlite files meant for local dev
+*.sqlite3
+
+# .env files
+.env
+.env.*
+
+# media files for user file uploads
+media/
+
+# venv
+venv/
+.venv/
+
+# ide files
+.vscode/
+.zed/
+.idea/

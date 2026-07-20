@@ -45,8 +45,13 @@ const App = {
   state: { view: 'auth', user: null, projects: [], project: null, conversations: [], conversation: null },
 
   init() {
-    if (API.token()) { this.loadProfile().then(() => this.route('dashboard')); }
-    else { this.route('auth'); }
+    if (API.token()) {
+      this.loadProfile()
+        .then(() => this.route('dashboard'))
+        .catch(() => { API.clearTokens(); this.route('auth'); });
+    } else {
+      this.route('auth');
+    }
     window.addEventListener('hashchange', () => this.onHashChange());
   },
 
@@ -679,7 +684,6 @@ const App = {
               <div class="message-bubble message-error">${safeMsg}</div>
             </div>
           </div>`;
-      }
       }
     } finally {
       sendBtn.disabled = false;

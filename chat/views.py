@@ -122,7 +122,7 @@ class ChatView(APIView):
                 conversation.delete()
             return Response(
                 {'error': str(e)},
-                status=status.HTTP_502_BAD_GATEWAY,
+                status=status.HTTP_400_BAD_REQUEST,
             )
         except Exception:
             logger.exception('Unexpected error in chat for user=%s', request.user.pk)

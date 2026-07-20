@@ -93,12 +93,20 @@ class ProjectFileViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_413_PAYLOAD_TOO_LARGE,
             )
 
-        instance = serializer.save(
-            project=project,
-            original_name=uploaded_file.name,
-            size_bytes=uploaded_file.size,
-            mime_type=uploaded_file.content_type or '',
-        )
+        try:
+            instance = serializer.save(
+                project=project,
+                original_name=uploaded_file.name,
+                size_bytes=uploaded_file.size,
+                mime_type=uploaded_file.content_type or '',
+            )
+        except Exception:
+            logger.exception('File upload failed for project=%s', project.pk)
+            return Response(
+                {'error': 'File upload failed. Please try again.'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
         logger.info('File uploaded: %s (id=%s, project=%s)', instance.original_name, instance.pk, project.pk)
         return Response(ProjectFileSerializer(instance).data, status=status.HTTP_201_CREATED)
 

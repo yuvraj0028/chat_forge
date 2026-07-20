@@ -670,14 +670,16 @@ const App = {
     } catch (err) {
       const loadingEl = document.getElementById('loading-msg');
       if (loadingEl) {
+        const safeMsg = this.esc(err.message || 'Something went wrong. Please try again.');
         loadingEl.outerHTML = `
           <div class="message assistant">
             <div class="message-avatar">⚡</div>
             <div class="message-content">
               <div class="message-role">${this.esc(this.state.project?.name || 'Assistant')}</div>
-              <div class="message-bubble message-error">${this.esc(err.message)}</div>
+              <div class="message-bubble message-error">${safeMsg}</div>
             </div>
           </div>`;
+      }
       }
     } finally {
       sendBtn.disabled = false;

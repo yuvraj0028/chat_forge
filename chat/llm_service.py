@@ -180,9 +180,22 @@ class LLMService:
             _circuit.record_failure()
             raise LLMError(f'Model "{model}" is not available. Please choose a different model.')
 
-        except groq.BadRequestError:
+        except groq.BadRequestError as e:
             _circuit.record_failure()
-            raise LLMError('Invalid request to AI service. Please simplify your message or change the model.')
+            err_str = str(e).lower()
+            if 'tokens per minute' in err_str or 'tpm' in err_str:
+                raise LLMError('Message too long for this model. Please send a shorter message or start a new conversation.')
+            if 'context_length' in err_str or 'context window' in err_str:
+                raise LLMError('Conversation is too long. Please start a new conversation.')
+            raise LLMError('Invalid request. Please try a different message.')
+
+        except groq.APIStatusError as e:
+            _circuit.record_failure()
+            if e.status_code == 413:
+                raise LLMError('Message too long. Please shorten it or start a new conversation.')
+            if e.status_code == 503:
+                raise LLMError('AI model is temporarily overloaded. Please try again in a moment.')
+            raise LLMError('AI service error. Please try again.')
 
         except groq.APIStatusError as e:
             _circuit.record_failure()

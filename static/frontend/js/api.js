@@ -31,8 +31,9 @@ const API = {
     }
 
     if (!res.ok) {
-      const err = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
-      throw new Error(err.error || err.detail || Object.values(err).flat().join(', ') || `HTTP ${res.status}`);
+      const err = await res.json().catch(() => ({}));
+      const msg = err.error || err.detail || (typeof err === 'string' ? err : '');
+      throw new Error(msg || `Request failed (HTTP ${res.status})`);
     }
     if (res.status === 204) return {};
     return res.json();
